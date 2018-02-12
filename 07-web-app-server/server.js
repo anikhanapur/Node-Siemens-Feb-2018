@@ -22,7 +22,7 @@ var server = http.createServer(function(req, res){
 			return;
 		}
 		fs.createReadStream(resourcePath).pipe(res);
-	} else if (resourceName === '/calculator'){
+	} else if (resourceName === '/calculator' && req.method === 'GET'){
 		var data = querystring.parse(urlObj.query);
 		var op = data.op,
 			x = parseInt(data.x, 10),
@@ -31,12 +31,25 @@ var server = http.createServer(function(req, res){
 
 		res.write(result.toString());
 		res.end();
+	} else if (resourceName === '/calculator' && req.method === 'POST'){
+		var rawData = '';
+		req.on('data', function(chunk){
+			rawData += chunk;
+		});
+		req.on('end', function(){
+			var data = querystring.parse(rawData);
+			var op = data.op,
+				x = parseInt(data.x, 10),
+				y = parseInt(data.y, 10),
+				result = calculator[op](x,y);
+
+			res.write(result.toString());
+			res.end();
+		});
 	} else {
 		res.statusCode = 404;
 		res.end();
 		return;
 	}
-	
 });
-
 server.listen(8080);
