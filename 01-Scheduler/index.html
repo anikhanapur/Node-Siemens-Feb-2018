@@ -12,17 +12,20 @@
 			}
 			function onBtnDoWorkClick(){
 				displayMessage('Work Started..!');
-				setTimeout(triggerWork);
+				doWork(onWorkComplete, onWorkProgress);
 			}
-			function triggerWork(){
-				doWork();
+			
+			function onWorkComplete(){
 				displayMessage('Work Completed..!');
+			}
+			function onWorkProgress(percentCompleted){
+				document.getElementById('workProgress').value = percentCompleted;
 			}
 			function displayMessage(msg){
 				var divMessages = document.getElementById('divMessages');
 				divMessages.innerHTML += msg + '<br/>';
 			}
-			function doWork(){
+			function doWork(workCompleteCallback, workProgressCallback){
 				var currentIteration = 0,
 					totalIterations = 1000;
 
@@ -33,10 +36,16 @@
 
 							}
 					++currentIteration;
+					var percentCompleted = (currentIteration/totalIterations) * 100;
+					if(typeof workProgressCallback === 'function')
+						workProgressCallback(percentCompleted);
+
 					if (currentIteration < totalIterations){
 						setTimeout(oneIteration);
 					} else {
 						console.log('Task Done!');
+						if (typeof workCompleteCallback === 'function')
+							workCompleteCallback();
 					}
 				}
 				oneIteration();
@@ -47,6 +56,9 @@
 <body>
 	<input type="text" name="" id="">
 	<input type="button" value="Do Work" id="btnDoWork">
+	<div>
+		<progress id="workProgress" min="0" max="100" value="0"></progress>
+	</div>
 	<div id="divMessages"></div>
 </body>
 </html>
