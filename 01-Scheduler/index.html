@@ -38,7 +38,8 @@
 					++currentIteration;
 					var percentCompleted = (currentIteration/totalIterations) * 100;
 					if(typeof workProgressCallback === 'function')
-						workProgressCallback(percentCompleted);
+							workProgressCallback(percentCompleted);
+					
 
 					if (currentIteration < totalIterations){
 						setTimeout(oneIteration);
