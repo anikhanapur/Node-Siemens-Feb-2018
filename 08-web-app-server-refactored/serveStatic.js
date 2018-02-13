@@ -11,12 +11,21 @@ module.exports = function(req, res){
 	var resourceName = req.urlObj.pathname;
 	if (isStatic(resourceName)){
 		var resourcePath = path.join(__dirname, resourceName);
-		console.log(resourcePath + ' exists ? -> ', fs.existsSync(resourcePath));
 		if (!fs.existsSync(resourcePath)){
 			res.statusCode = 404;
 			res.end();
 			return;
 		}
-		fs.createReadStream(resourcePath).pipe(res);
+		//fs.createReadStream(resourcePath).pipe(res);
+		var stream = fs.createReadStream(resourcePath);
+
+		stream.on('data', function(chunk){
+			console.log('serving file from serveStatic');
+			res.write(chunk);
+		});
+		stream.on('end', function(){
+			console.log('ending response from serveStatic');
+			res.end();
+		})
 	}
 }
