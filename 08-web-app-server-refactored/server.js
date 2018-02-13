@@ -3,11 +3,11 @@ var http = require('http'),
 	serveStatic = require('./serveStatic'),
 	calculatorHandler = require('./calculatorHandler'),
 	notFoundHandler = require('./notFoundHandler');
+	app = require('./app');
 
-var server = http.createServer(function(req, res){
-	dataParser(req);
-	serveStatic(req, res);
-	calculatorHandler(req, res);
-	notFoundHandler(res);
-});
-server.listen(8080);
+app.use(dataParser);
+app.use(serveStatic);
+app.use(calculatorHandler);
+app.use(notFoundHandler);
+
+http.createServer(app).listen(8080);

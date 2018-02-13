@@ -1,6 +1,5 @@
-module.exports = function(res){
-	console.log('ending response from notFoundHandler');
+module.exports = function(req, res, next){
 	res.statusCode = 404;
 	res.end();
-	return;
+	next();
 }
